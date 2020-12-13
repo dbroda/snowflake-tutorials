@@ -85,7 +85,7 @@ copy into emp_basic
   on_error = 'skip_file';
 ```
 
-## Quering stage files
+## Querying stage files
 ```
 select t.$1, t.$2 from @sf_tuts.public.%emp_basic  t
 
@@ -93,6 +93,11 @@ create or replace file format myformat
 type = 'csv'  error_on_column_count_mismatch=false;
 
 select t.$1, t.$2 from @sf_tuts.public.%emp_basic (file_format => myformat) t;
+```
+
+## Querying metadata
+```
+select metadata$filename, metadata$file_row_number, t.$1, t.$2 from @sf_tuts.public.%emp_basic (file_format => myformat) t;
 ```
 
 ### Step-5:  
