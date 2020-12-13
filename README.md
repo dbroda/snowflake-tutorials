@@ -67,11 +67,7 @@ create or replace warehouse sf_tuts_wh with
 Stage data files  
 Linux
 ```
-put file:///tmp/employees0*.csv @sf_tuts.public.%emp_basic;
-```
-Windows
-```
-put file://c:\temp\employees0*.csv @sf_tuts.public.%emp_basic;
+put file:///Users/darek/workspace/kata/snowflake/getting-started/employees0*.csv @sf_tuts.public.%emp_basic;
 ```
 
 list files
@@ -87,6 +83,16 @@ copy into emp_basic
   file_format = (type = csv field_optionally_enclosed_by='"')
   pattern = '.*employees0[1-5].csv.gz'
   on_error = 'skip_file';
+```
+
+## Quering stage files
+```
+select t.$1, t.$2 from @sf_tuts.public.%emp_basic  t
+
+create or replace file format myformat
+type = 'csv'  error_on_column_count_mismatch=false;
+
+select t.$1, t.$2 from @sf_tuts.public.%emp_basic (file_format => myformat) t;
 ```
 
 ### Step-5:  
@@ -117,3 +123,5 @@ drop warehouse if exists sf_tuts_wh;
 https://docs.snowflake.net/manuals/user-guide/data-unload-s3.html
 
 Credits: https://docs.snowflake.net/manuals/user-guide-getting-started.html
+
+
