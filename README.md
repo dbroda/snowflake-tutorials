@@ -218,4 +218,20 @@ from values
 }') v;
 
 select * from car_sales;
+
+select src:dealership from car_sales;
+
+
+select src:vehicle[0] from car_sales;
+
+
+#flatten
+select
+   value:name as "Customer Name",
+   value:address as "Address"
+   from
+     car_sales
+   , lateral flatten(input => src:customer);
+
+select get_path(src, 'vehicle[0]:make') from car_sales;
 ```
