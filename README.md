@@ -129,4 +129,51 @@ https://docs.snowflake.net/manuals/user-guide/data-unload-s3.html
 
 Credits: https://docs.snowflake.net/manuals/user-guide-getting-started.html
 
+## Joins
 
+https://docs.snowflake.com/en/user-guide/querying.html
+```
+use SNOWFLAKE_SAMPLE_DATA.TPCH_SF1;
+
+#inner joins
+select * from CUSTOMER C JOIN ORDERS O ON O.O_CUSTKEY = C.C_CUSTKEY LIMIT 10; 
+
+#subquery
+SELECT * FROM CUSTOMER C WHERE C_CUSTKEY = (SELECT MAX(O.O_CUSTKEY) FroM ORDERS O);
+
+#cte - common table expression
+with
+   topCust (okey, ckey, oprice, odate) as (
+     select O_ORDERKEY, O_CUSTKEY, O_TOTALPRICE, O_ORDERDATE from  ORDERS LIMIT 10
+   )
+
+   select * from topCust;
+  
+  
+#hierarchical (connectby)
+
+use SF_TUTS;
+
+create or replace table managers  (title varchar, employee_id integer);
+
+create or replace table employees (title varchar, employee_id integer, manager_id integer);
+
+insert into managers (title, employee_id) values
+    ('President', 1);
+    
+insert into employees (title, employee_id, manager_id) values
+    ('President', 1, null),  -- The President has no manager.
+        ('Vice President Engineering', 10, 1),
+            ('Programmer', 100, 10),
+            ('QA Engineer', 101, 10),
+        ('Vice President HR', 20, 1),
+            ('Health Insurance Analyst', 200, 20);
+            
+            
+select level || '->' || employee_id, manager_id, title
+   from employees                       
+   start with title = 'President'
+   connect by manager_id = prior employee_id;
+   
+   
+```
